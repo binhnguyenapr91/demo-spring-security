@@ -3,6 +3,7 @@ package com.example.demospringsecurity.controller;
 import com.example.demospringsecurity.model.Accounts;
 import com.example.demospringsecurity.util.WebUtil;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,9 +25,9 @@ public class MainController {
 
     @GetMapping("/admin")
     public String getAdmin(Model model, Principal principal){
-        User loggedAccount = (User) ((Authentication)principal).getPrincipal();
-        String accountInfo = WebUtil.toString(loggedAccount);
-        model.addAttribute("accountInfor",accountInfo);
+        Authentication loggedAccount = SecurityContextHolder.getContext().getAuthentication();
+        String username = loggedAccount.getName();
+        model.addAttribute("accountInfor",username);
         return "adminPage";
     }
 
@@ -49,10 +50,9 @@ public class MainController {
 
         System.out.println("User Name: " + userName);
 
-        User loginedUser = (User) ((Authentication) principal).getPrincipal();
-
-        String userInfo = WebUtil.toString(loginedUser);
-        model.addAttribute("accountInfor", userInfo);
+        Authentication loggedAccount = SecurityContextHolder.getContext().getAuthentication();
+        String username = loggedAccount.getName();
+        model.addAttribute("accountInfor",username);
 
         return "accountInforPage";
     }
@@ -61,11 +61,9 @@ public class MainController {
     public String accessDenied(Model model, Principal principal) {
 
         if (principal != null) {
-            User loginedUser = (User) ((Authentication) principal).getPrincipal();
-
-            String userInfo = WebUtil.toString(loginedUser);
-
-            model.addAttribute("accountInfor", userInfo);
+            Authentication loggedAccount = SecurityContextHolder.getContext().getAuthentication();
+            String username = loggedAccount.getName();
+            model.addAttribute("accountInfor",username);
 
             String message = "Hi " + principal.getName() //
                     + "<br> You do not have permission to access this page!";

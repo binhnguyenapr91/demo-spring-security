@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -34,10 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
         GrantedAuthority authority = new SimpleGrantedAuthority(roleNames);
         grantList.add(authority);
-
-
-        UserDetails userDetails = (UserDetails) new Accounts(accounts.getUsername(), accounts.getPassword(), grantList);
-
-        return userDetails;
+        CustomUserDetails customUserDetails = new CustomUserDetails();
+        customUserDetails.setAccounts(accounts);
+        customUserDetails.setAuthorities(grantList);
+        return customUserDetails;
     }
 }
